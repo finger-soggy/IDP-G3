@@ -6,6 +6,9 @@ int echo = 5;                                           //Echo Signal For Ultras
 int bin = 7;                                            //Servo Motor Output For Bin
 int detection = 12;                                     //LED indicator For Object presence
 int holder = 8;                                         //Servo Motor Output For Holder
+int Red = 9;
+int Green = 10;
+int Blue = 11;
 int angle = 0;                                          //Initializing Angle For Bin
 int towrite;                                            //Angle to be written onto bin servo motor 
 Servo servo_bin;
@@ -15,6 +18,7 @@ const float speed_cm_us = 0.034;                        //cm per microsecond
 const float dist_threshold = 20;                        //Start object material analysis when an object is 20cm from the ultrasonic sensor
 bool start_analysis = false;                            //Object detected = True, else False
 
+void rgbwrite(int, int, int);
 void setup() {
   pinMode(detection, OUTPUT);
   pinMode(bin, OUTPUT);
@@ -23,10 +27,13 @@ void setup() {
   pinMode(echo, INPUT);
   pinMode(cap, INPUT_PULLUP);
   pinMode(ind, INPUT_PULLUP);
+  pinMode(Red, OUTPUT);
+  pinMode(Green, OUTPUT);
+  pinMode(Blue, OUTPUT);
   servo_bin.attach(bin);
   servo.attach(holder);
   servo_bin.write(0);
-  servo.write(4);
+  servo.write(0);
   digitalWrite(detection, LOW);
   Serial.begin(9600);
 }
@@ -75,6 +82,7 @@ void loop() {
 
   //-------------------------------------START BIN SELECTION-----------------------------//
   if (in==0) {
+    rgbwrite(0, 255, 0);
     towrite = 90;
     Serial.println("Metal detected!");
 
@@ -117,7 +125,7 @@ void loop() {
         break;
     }
 
-
+    
   //--------------------------------BIN ROTATE ENDS-------------------------------//
 
 
@@ -126,18 +134,19 @@ void loop() {
 
   //--------------------------------HOLDER OPEN-----------------------------------//
 
-    for (int i =1 ; i<=15; i++){
-      servo.write(i*5);
-      delay(30);
+    for (int i =1 ; i<=85; i++){
+      servo.write(i);
+      delay(2);
     }
-    delay(2000);
-    servo.write(4);
+    delay(3000);
+    servo.write(0);
     delay(2000);
 
   //--------------------------------HOLDER CLOSE----------------------------------//
 
   }
   else if (c==0) {
+    rgbwrite(0, 0, 255);
     towrite = 0;
     Serial.println("Paper or other material detected!");
 
@@ -183,19 +192,19 @@ void loop() {
 
   //--------------------------------BIN ROTATE ENDS-------------------------------//
 
-  
+    
     delay(3000);
 
 
   //--------------------------------HOLDER OPEN-----------------------------------//
 
 
-    for (int i =1 ; i<=15; i++){
-      servo.write(i*5);
-      delay(30);
+    for (int i =1 ; i<=85; i++){
+      servo.write(i);
+      delay(2);
     }
-    delay(2000);
-    servo.write(4);
+    delay(3000);
+    servo.write(0);
     delay(2000);
 
 
@@ -203,6 +212,8 @@ void loop() {
   }
 
   else {
+    
+    rgbwrite(255, 255, 255);
     towrite = 180;
     Serial.println("Water bottle or plastic bag detected!");
 
@@ -248,19 +259,19 @@ void loop() {
 
   //--------------------------------BIN ROTATE ENDS-------------------------------//
 
-
+    
     delay(3000);
 
 
   //--------------------------------HOLDER OPEN-----------------------------------//
 
 
-    for (int i =1 ; i<=15; i++){
-      servo.write(i*5);
-      delay(30);
+    for (int i =1 ; i<=85; i++){
+      servo.write(i);
+      delay(2);
     }
-    delay(2000);
-    servo.write(4);
+    delay(3000);
+    servo.write(0);
     delay(2000);
 
 
@@ -268,8 +279,14 @@ void loop() {
   }
 
   //--------------------------------BIN SELECTION ENDS---------------------------------//
-
+  
   start_analysis = false;
   digitalWrite(detection, LOW);
   delay(5000);
+}
+
+void rgbwrite(int r, int g, int b) {
+  analogWrite(Red, r);
+  analogWrite(Green, g);
+  analogWrite(Blue, b);
 }
