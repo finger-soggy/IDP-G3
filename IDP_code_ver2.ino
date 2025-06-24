@@ -6,9 +6,9 @@ int echo = 5;                                           //Echo Signal For Ultras
 int bin = 7;                                            //Servo Motor Output For Bin
 int detection = 12;                                     //LED indicator For Object presence
 int holder = 8;                                         //Servo Motor Output For Holder
-int Red = 9;
-int Green = 10;
-int Blue = 11;
+const int Red = 9;
+const int Green = 10;
+const int Blue = 11;
 int angle = 0;                                          //Initializing Angle For Bin
 int towrite;                                            //Angle to be written onto bin servo motor 
 Servo servo_bin;
@@ -19,6 +19,7 @@ const float dist_threshold = 20;                        //Start object material 
 bool start_analysis = false;                            //Object detected = True, else False
 
 void rgbwrite(int, int, int);
+void openlid();
 void setup() {
   pinMode(detection, OUTPUT);
   pinMode(bin, OUTPUT);
@@ -49,12 +50,12 @@ void loop() {
     
     duration_us = pulseIn(echo, HIGH);
     distance_cm = (speed_cm_us*duration_us)/2;
-    Serial.print("Distance detected: ");
-    Serial.println(distance_cm);
+    
     delay(250);
     if (distance_cm <= dist_threshold) {
+      Serial.print("Distance detected: ");
+      Serial.println(distance_cm);
       Serial.println("Object detected!!!");
-      delay(800);
       digitalWrite(detection, HIGH);
       delay(3000);
       
@@ -128,25 +129,9 @@ void loop() {
     
   //--------------------------------BIN ROTATE ENDS-------------------------------//
 
-
-    delay(3000);
-
-
-  //--------------------------------HOLDER OPEN-----------------------------------//
-
-    for (int i =1 ; i<=85; i++){
-      servo.write(i);
-      delay(2);
-    }
-    delay(3000);
-    servo.write(0);
-    delay(2000);
-
-  //--------------------------------HOLDER CLOSE----------------------------------//
-
   }
   else if (c==0) {
-    rgbwrite(0, 0, 255);
+    rgbwrite(255, 0, 0);
     towrite = 0;
     Serial.println("Paper or other material detected!");
 
@@ -192,30 +177,14 @@ void loop() {
 
   //--------------------------------BIN ROTATE ENDS-------------------------------//
 
-    
-    delay(3000);
 
-
-  //--------------------------------HOLDER OPEN-----------------------------------//
-
-
-    for (int i =1 ; i<=85; i++){
-      servo.write(i);
-      delay(2);
-    }
-    delay(3000);
-    servo.write(0);
-    delay(2000);
-
-
-  //--------------------------------HOLDER CLOSE---------------------------------//
   }
 
   else {
     
-    rgbwrite(255, 255, 255);
+    rgbwrite(0, 0, 255);
     towrite = 180;
-    Serial.println("Water bottle or plastic bag detected!");
+    Serial.println("Water bottle, plastic bag or other unidentified object detected!");
 
 
   //--------------------------------BIN ROTATE-----------------------------------//
@@ -259,30 +228,26 @@ void loop() {
 
   //--------------------------------BIN ROTATE ENDS-------------------------------//
 
-    
-    delay(3000);
-
-
-  //--------------------------------HOLDER OPEN-----------------------------------//
-
-
-    for (int i =1 ; i<=85; i++){
-      servo.write(i);
-      delay(2);
-    }
-    delay(3000);
-    servo.write(0);
-    delay(2000);
-
-
-  //--------------------------------HOLDER CLOSE----------------------------------//
   }
 
   //--------------------------------BIN SELECTION ENDS---------------------------------//
-  
+
+  delay(4000);
+  //--------------------------------HOLDER OPEN-----------------------------------//
+
+  openlid();
+
+  //--------------------------------HOLDER CLOSE----------------------------------//
   start_analysis = false;
   digitalWrite(detection, LOW);
-  delay(5000);
+  delay(3000);
+
+}
+
+void openlid() {
+  servo.write(90);
+  delay(3000);
+  servo.write(0);
 }
 
 void rgbwrite(int r, int g, int b) {
