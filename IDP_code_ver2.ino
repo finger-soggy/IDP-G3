@@ -40,6 +40,7 @@ void setup() {
 }
 
 void loop() {
+  
   //Infinite loop to search for incoming user
   while (!start_analysis) {
     digitalWrite(trigger, LOW);
@@ -52,7 +53,7 @@ void loop() {
     distance_cm = (speed_cm_us*duration_us)/2;
     
     delay(250);
-    if (distance_cm <= dist_threshold) {
+    if (distance_cm <= dist_threshold && distance_cm > 0) {
       Serial.print("Distance detected: ");
       Serial.println(distance_cm);
       Serial.println("Object detected!!!");
@@ -125,7 +126,6 @@ void loop() {
       default: 
         break;
     }
-
     
   //--------------------------------BIN ROTATE ENDS-------------------------------//
 
@@ -232,7 +232,7 @@ void loop() {
 
   //--------------------------------BIN SELECTION ENDS---------------------------------//
 
-  delay(4000);
+  delay(2000);
   //--------------------------------HOLDER OPEN-----------------------------------//
 
   openlid();
@@ -245,7 +245,8 @@ void loop() {
 }
 
 void openlid() {
-  servo.write(90);
+  
+  servo.write(100);
   delay(3000);
   servo.write(0);
 }
