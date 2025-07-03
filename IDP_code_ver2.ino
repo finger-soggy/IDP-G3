@@ -41,6 +41,7 @@ void setup() {
 
 void loop() {
   
+  
   //Infinite loop to search for incoming user
   while (!start_analysis) {
     digitalWrite(trigger, LOW);
@@ -240,14 +241,17 @@ void loop() {
   //--------------------------------HOLDER CLOSE----------------------------------//
   start_analysis = false;
   digitalWrite(detection, LOW);
-  delay(3000);
+  delay(1000);
 
 }
 
 void openlid() {
   
-  servo.write(100);
-  delay(3000);
+  for (int i=0; i<100; i++) {
+    servo.write(i);
+    delay(5);
+  }
+  delay(4500);
   servo.write(0);
 }
 
